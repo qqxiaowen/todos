@@ -1,65 +1,56 @@
 const list = JSON.parse(localStorage.getItem('todo')) || [];
+const router = new VueRouter({
+  linkExactActiveClass: 'selected'
+})
 const vm = new Vue({
+	router,
 	el: '.todoapp',
 	data: {
 		list,
-		currentTemp: '',
-		currentId: '',
-		currentThing:''
-
 	},
 	methods: {
-		del(id) {
+		del(id) {	
 			this.list = this.list.filter(item => item.id !== id);
 		},
-		add() {
-			if (!this.currentTemp.trim() ){
-				alert('输入内容不能为空');
-				return;
-			}
-			let temp = {
-				id: +new Date(),
-				thing: this.currentTemp,
-				done: false
-			};
+		add(temp) {
 			this.list.unshift(temp);
-			// console.log(this.list);
-			this.currentTemp = '';
 		},
-		edit(id,thing) {
-			this.currentId = id;
-			this.currentThing = thing;
+		edit(temp) {
+			this.list.forEach(item => {
+				if(item.id === temp.id) {
+					item.thing = temp.thing;
+					// item.done = temp.done;
+				}
+			});
+			console.log(this.list);
 		},
-		editUp() {
-			const todo = this.list.filter(item => item.id === this.currentId);
-			if(!todo[0].thing.trim()){
-				this.list = this.list.filter(item => item.id !== this.currentId);
-			}
-			this.currentId = ''
-		},
-		cancel(item) {
-			item.thing = this.currentThing;
-			this.currentId = '';
+		checkAll(value) {
+			// console.log(value);
+			this.list.forEach(item => item.done = value);
 		},
 		clear() {
 			this.list = this.list.filter(item => !item.done);
-		}
+		},
+		change (id) {
+      const temp = this.list.find(item => item.id === id)
+      temp.done = !temp.done
+    },
 	},
 	computed: {
-			leftCount() {
-				return this.list.filter(item => !item.done).length;
-			},
-			isClear() {
-				return this.list.some(item => item.done);
-			},
-			isCheckAll: {
-				get() {
-					return this.list.every(item => item.done);
-				},
-				set(value){
-					this.list.forEach(item => item.done = value);
-				}
+		isShow() {
+			return this.list.length;
+		},
+		showList() {
+			const path = this.$route.path;
+			if(path === '/active'){
+				return this.list.filter(item => !item.done)
+			}else if (path === '/completed') {
+				return this.list.filter(item => item.done);
+			}else {
+				return this.list;
 			}
+			// console.log(path);
+		}
 	},
 	watch: {
 		list: {
