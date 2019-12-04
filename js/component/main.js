@@ -44,6 +44,7 @@ Vue.component('todos-main',{
         this.del(this.currentId);
         return;
       }
+      // console.log(e.target.value)
       this.$emit('edit',this.currentId,e.target.value);
       this.currentId = '';
     },

@@ -15,10 +15,12 @@ const vm = new Vue({
 		add(temp) {
 			this.list.unshift(temp);
 		},
-		edit(temp) {
+		edit(id,thing) {
+			// console.log(temp)
 			this.list.forEach(item => {
-				if(item.id === temp.id) {
-					item.thing = temp.thing;
+				if(item.id === id) {
+					item.thing = thing;
+					// console.log(temp.thing)
 					// item.done = temp.done;
 				}
 			});
